@@ -17,10 +17,15 @@
     "pug": "^2.0.0-alpha7"
   },
   "devDependencies": {
+    "autoprefixer": "^6.3.6",
     "browser-sync": "^2.12.8",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-nodemon": "^2.0.7",
-    "gulp-util": "^3.0.7"
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-stylus": "^2.3.1",
+    "gulp-util": "^3.0.7",
+    "lost": "^6.8.0",
+    "poststylus": "^0.2.3"
   },
   "description": ""
 }
