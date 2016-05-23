@@ -59,7 +59,10 @@ gulp.task('nodemon', (done) => {
       NODE_ENV: 'development'
     },
     stdout: false
-  }).on('readable', function (log) {
+  }).on('stderr', (err) => {
+      console.log(String(err));
+    })
+    .on('readable', function (log) {
       this.stdout.on('data', (data) => {
         const str = data.toString().replace(/(\r\n|\n|\r)+$/gm, '');
 

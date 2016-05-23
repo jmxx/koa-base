@@ -4,6 +4,7 @@ import server     from 'koa-static';
 import bodyParser from 'koa-bodyparser';
 import session    from 'koa-generic-session';
 import redisStore from 'koa-redis';
+import convert    from 'koa-convert';
 import config     from './config';
 import api        from './api/v1';
 
@@ -13,9 +14,9 @@ app.keys = ['SECRET_KEY_2', 'SECRET_KEY_1'];
 
 app.use(server(config.paths.public));
 
-app.use(session({
+app.use(convert(session({
   store: redisStore()
-}));
+})));
 
 app.use(views(config.paths.views, {
   extension: 'pug'
@@ -38,8 +39,9 @@ app.use((ctx, next) => {
   });
 })
 
-app.use(async (ctx) => {
+app.use(async (ctx, next) => {
   ctx.session.timestamp = (new Date).getTime();
+  await next();
 });
 
 app.use(api.sessions.routes());
