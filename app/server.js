@@ -1,31 +1,36 @@
-import Koa    from 'koa';
-import views  from 'koa-views';
-import server from 'koa-static';
-import Router from 'koa-router';
-import config from './config';
+import Koa        from 'koa';
+import views      from 'koa-views';
+import server     from 'koa-static';
+import bodyParser from 'koa-bodyparser';
+import config     from './config';
+import api        from './api/v1';
 
 const app = new Koa();
-const router = new Router();
+
+app.use(server(config.paths.public));
 
 app.use(views(config.paths.views, {
   extension: 'pug'
 }));
 
-app.use(server(config.paths.public));
+app.use(bodyParser({
+  extendTypes: {
+    json: ['application/json'] // will parse application/x-javascript type body as a JSON string
+  }
+}));
 
-router
-  .get('/', async (ctx) => {
-    await ctx.render('index', {
-      text: 'Koa'
-    });
-  })
-  .get('/:text', async (ctx) => {
-    await ctx.render('index', {
-      text: ctx.params.text
-    });
+app.use((ctx, next) => {
+  return next().catch((err) => {
+    if (401 === err.status) {
+      ctx.status = 401;
+      ctx.body = 'Protected resource, use Authorization header to get access.';
+    } else {
+      throw err;
+    }
   });
+})
 
-app.use(router.routes());
+app.use(api.sessions.routes());
 
 app.listen(process.env.PORT || 3000, () => {
   if (process.env.SIGNATURE) {
