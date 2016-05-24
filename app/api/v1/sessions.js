@@ -18,14 +18,16 @@ router
     });
 
     ctx.body = {
-      status: 'OK'
+      status: 'OK',
+      username: ctx.request.body.username
     };
 
     await next();
   })
   .get('/', jwt({secret: SECRET_KEY, key: 'jwtToken', cookie: JWT_COOKIE_KEY}), (ctx) => {
     ctx.body = {
-      username: 'username'
+      username: 'username',
+      state: ctx.state.jwtToken
     };
   });
 
